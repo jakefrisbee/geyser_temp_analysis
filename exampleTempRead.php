@@ -6,13 +6,18 @@
 */
 	ini_set('memory_limit', '-1');
 	
+
+	/*--- Aurum ---*/
 	// read CSV file
 	$theArray = readcsv('http://www.geysertimes.org/datalogger/Raw%20Data/Aurum/Aurum_Geyser%2011-21-11%20to%203-24-12.csv');
-	// execute method
-	$results = simple_peak_method($theArray);
-	// see results
-	print_r($results);
+	$tempBump = 10;
+	$tempThreshold = 80;
+	$jumpAhead = 120;
+
+	$results = simple_peak_method($theArray,$tempBump,$tempThreshold,$jumpAhead);
+	
 	//echo as CSV
+	echo 'Aurum<br/>';
 	echo arrayToCSV($results);
 	
 
@@ -20,11 +25,9 @@
 *  Simple Peak Detection Method
 *
 */
-function simple_peak_method($tempArray) {
+function simple_peak_method($tempArray,$tempBump,$tempThreshold,$jumpAhead) {
 	
-	$tempBump = 10;
-	$tempThreshold = 80;
-	$jumpAhead = 120;
+	
 	//cumulative moving average length
 	$cmaLag = 60;
 	
@@ -78,7 +81,7 @@ function cumm_moving_average($array,$from,$to) {
   * Formats a line (passed as a fields  array) as CSV and returns the CSV as a string.
   * Adapted from http://us3.php.net/manual/en/function.fputcsv.php#87120
   */
-function arrayToCsv( array &$fields, $delimiter = ';', $enclosure = '"', $encloseAll = false, $nullToMysqlNull = false ) {
+function arrayToCsv( array &$fields, $delimiter = ';<br/>', $enclosure = '"', $encloseAll = false, $nullToMysqlNull = false ) {
     $delimiter_esc = preg_quote($delimiter, '/');
     $enclosure_esc = preg_quote($enclosure, '/');
 
