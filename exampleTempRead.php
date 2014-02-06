@@ -13,7 +13,10 @@
 	$tempBump = 10;
 	$tempThreshold = 80;
 	$jumpAhead = 120;
+	//cumulative moving average length
+	$backLag = 60;
 
+	$filterArray = moving_average($theArray,$backLag);
 	$results = simple_peak_method($theArray,$tempBump,$tempThreshold,$jumpAhead);
 	
 	//echo as CSV
@@ -28,8 +31,7 @@
 function simple_peak_method($tempArray,$tempBump,$tempThreshold,$jumpAhead) {
 	
 	
-	//cumulative moving average length
-	$cmaLag = 60;
+	
 	
 	$arrCount = count($tempArray);
 	
@@ -65,17 +67,19 @@ function readCSV($csvFile){
 /************************************
 *  cumm_moving_average()
 * 	utility function for calculating a moving average
+*	uses PHP 5.5 function
 */
-function cumm_moving_average($array,$from,$to) {
+function moving_average($array,$backLag) {
 	$arrCount = count($array);
-	$start = max($from,0);
-	$end = min($arrCount - 1,$to);
-	$cma = 0;
 	
-	for ($j = $start; $j < $end; $j++) {
-			$cma = $cma + $array[$j]['Temp'];
-		}
-	return $cma / ($from - $to);
+	$myArray = $array;
+	
+	for ($i = 0; $i < $arrCount; $i++) {
+		$chunk = array_slice(array_column($array,1),min(0,$i - $backLag),$i);
+		$myArray[$i][3] = array_sum($chunk) / count($chunk);
+	}
+	
+	return $myArray;
 }
 /**
   * Formats a line (passed as a fields  array) as CSV and returns the CSV as a string.
@@ -102,5 +106,12 @@ function arrayToCsv( array &$fields, $delimiter = ';<br/>', $enclosure = '"', $e
     }
 
     return implode( $delimiter, $output );
+}
+
+function array_column($array, $column)
+{
+    $ret = array();
+    foreach ($array as $row) $ret[] = $row[$column];
+    return $ret;
 }
 ?>
