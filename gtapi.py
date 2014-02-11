@@ -7,8 +7,10 @@ import json #API returns JSON
 def gt_loggerdata(loggerID,epoch_from,epoch_to):
 
     logger_url = "http://geysertimes.org/api/v2/loggerdata/%s/%s/%s" % (loggerID, epoch_from, epoch_to)
-    content = requests.get(logger_url)
-    log_json = json.loads(content)
+    print 'reading: ' + logger_url
+    r = requests.get(logger_url)
+    log_json = json.loads(r.text)
+
 
     log_list = log_json['data']
 
