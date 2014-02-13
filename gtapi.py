@@ -22,12 +22,3 @@ def gt_loggerdata(loggerID,epoch_from,epoch_to):
         y.append(log_list[i]['y'])
 
     return (x,y)
-
-def post_to_geysertimes(geyserID, e_times):
-    url = "http://localhost/api/v2/submit_proposed_entries"
-    
-    for t in e_times:
-        payload = {'geyserID' : geyserID, 'unixtime' : t, 'entrantID' : 16}
-        print payload
-        r = requests.post(url,data=payload)
-        print r.text

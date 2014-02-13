@@ -7,6 +7,8 @@ Created on Wed Feb 05 12:01:19 2014
 
 import gtapi
 import peak_detection as pd
+import gtapi_private as gtapip
+
 x = []
 y = []
 
@@ -60,9 +62,4 @@ e_times = [item[1] for item in with_intervals]
 
 plot_peaks(npx,npy,t)
     
-#gtapi.post_to_geysertimes(p['geyserID'],e_times)    
-
-
-#show longest and shortest intervals
-#plot(npy[t[0]-5:t[2]+5])
-#send to GT (need API)
+#gtapip.post_to_geysertimes(p['geyserID'],e_times)
