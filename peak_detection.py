@@ -101,7 +101,7 @@ def find_biggest_jumps(temps,guesses,window=6):
         
         npj = np.asarray(jumps)
 
-        max_index = i + npj.argmax()        
+        max_index = i - window/2 + npj.argmax() + 1
         
         final.append(max_index)
         

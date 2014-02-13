@@ -11,16 +11,18 @@ x = []
 y = []
 
 params = {'Whirligig': {'geyserID': 79, 'loggerID': 22, 'filter_width': 30, 'snr': 3, 'jump_window': 6},
-          'Aurum': {'geyserID': x, 'loggerID': 10, 'filter_width': 60, 'snr': 100, 'jump_window': 30},
+          'Aurum': {'geyserID': 10, 'loggerID': 4, 'filter_width': 60, 'snr': 100, 'jump_window': 30},
           'Plume': {'geyserID': x, 'loggerID': 17, 'filter_width': 60, 'snr': 100, 'jump_window': 10},
           #'Little Squirt': {'geyserID': x, 'loggerID': 14, 'filter_width': 60, 'snr': 10, 'jump_window': 10},
           'Lion': {'geyserID': x, 'loggerID': 13, 'filter_width': 60, 'snr': 25, 'jump_window': 10},
-          'Beehive': {'geyserID': x, 'loggerID': 5, 'filter_width': 60, 'snr': 50, 'jump_window': 30}
+          'Beehive': {'geyserID': 1, 'loggerID': 5, 'filter_width': 60, 'snr': 50, 'jump_window': 30},
+          'Old Faithful': {'geyserID': 2, 'loggerID': 16, 'filter_width': 60, 'snr': 50, 'jump_window': 30}
+
 }
 
-geyser = 'Beehive'
-from_time = 1321917378
-to_time =   1323927378
+geyser = 'Old Faithful'
+from_time = 1353507061
+to_time =   1354697061
 
 
 p = params[geyser]
@@ -52,13 +54,13 @@ def plot_peaks(x,y,indexes):
         plot(x[i],60,'r+')
     
 
-with_intervals = times_and_intervals(t,npx)
+with_intervals = pd.times_and_intervals(t,npx)
 
 e_times = [item[1] for item in with_intervals]
 
 plot_peaks(npx,npy,t)
     
-#gtapi.post_to_geysertimes(p['geyserId'],e_times)    
+#gtapi.post_to_geysertimes(p['geyserID'],e_times)    
 
 
 #show longest and shortest intervals
