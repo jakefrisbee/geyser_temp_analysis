@@ -19,8 +19,8 @@ b) output a CSV file of identified eruption times
 Here's a ranking of geyser data from "easy" to "hard" to interpret:
 
 Peaks: <ol><li>Aurum</li> <li>Plume</li> <li>Lion</li> <li>Daisy</li> <li>Old Faithful</li> <li>Great Fountain</li> 
-<li>Beehive</li> <li>Castle</li> <li>Oblong</li> <li>Turban</li></ol>
+<li>Beehive</li> <li>Oblong</li> <li>Turban</li></ol>
   
-Plateaus (calculate durations, too): <ol><li>Artemisia</li> <li>Fountain</li> <li>Little Squirt</li> Grotto</li></ol>
+Plateaus (calculate durations, too): <ol><li>Artemisia</li> <li>Fountain</li> <li>Castle (major or minor)</li> <li>Little Squirt</li> <li>Grotto</li></ol>
   
 Drops: <ol> <li>Depression</li> <li>Riverside</li></ol>
