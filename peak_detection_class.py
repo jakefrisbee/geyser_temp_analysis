@@ -110,7 +110,38 @@ class geyser_logger_analyzer:
             
             figure("False +: " + str(i))
             plot(x[idx-plot_window:idx+plot_window], y[idx-plot_window:idx+plot_window])
-            
+    
+    def optimize(self):
+        self.report_array = {}
+        
+        filter_width = [30, 120, 240, 360, 480, 600]
+        snr = [5, 25, 50, 100]
+        jump_window = [30]
+        seconds_tolerance = 120 
+        
+        for f in filter_width:
+            for s in snr:
+                for j in jump_window:
+                    print "Running: filter %s; snr %s; jump %s" % (f, s, j)
+                    self.run_detection(f, s, j)
+                    self.report(seconds_tolerance)
+                    self.report_array.update({
+                        "geyserID": self.geyserID,
+                        "loggerID": self.loggerID,
+                        "from": self.from_time,
+                        "to": self.to_time,
+                        "filter_width": f,
+                        "snr": s,
+                        "jump_window": j,
+                        "actuals": len(self.actual_times),
+                        "found": len(self.proposed_times), 
+                        "true": len(self.true_positive), 
+                        "false": len(self.false_positive), 
+                        "missed": len(self.missed)
+                        })
+                    
+        print self.report_array
+        
 # misc functions
 def remove_duplicates(seq):
     seen = set()
@@ -122,7 +153,7 @@ from_unix = 1352314261
 to_unix =   1353414261
 
 myLog = geyser_logger_analyzer(4,10,from_unix,to_unix)
-myLog.run_detection(120,100,30)
-myLog.report(60)
-myLog.plot_false_positives(6000)
+myLog.optimize()
+
+#myLog.plot_false_positives(6000)
 
