@@ -94,16 +94,15 @@ def find_geyser_peaks(v,snr=10):
 def find_biggest_jumps(temps,guesses,window=6):
     final = []
     for i in guesses:
-        theArea = temps[i-window/2:i+window/2]
+        theArea = temps[max(0,i-window/2):min(len(temps)-1,i+window/2)]
         jumps = []
         for j in range(1,len(theArea)):
             jumps.append(theArea[j] - theArea[j-1])
         
-        npj = np.asarray(jumps)
-
-        max_index = i - window/2 + npj.argmax() + 1
-        
-        final.append(max_index)
+        if (len(jumps) > 0):
+            npj = np.asarray(jumps)
+            max_index = i - window/2 + npj.argmax() + 1
+            final.append(max_index)
         
         #remove duplicate indexes
         final = remove_duplicates(final)
@@ -127,8 +126,9 @@ def times_and_intervals(indexes,times):
     final = []
     e_times = []
     intervals = []
-    for i in indexes:    
-        e_times.append(times[i])
+    for i in indexes:
+        if (i < len(times)):
+            e_times.append(times[i])
         
     for i in range(1,len(e_times)):
         intervals.append(e_times[i] - e_times[i-1])
