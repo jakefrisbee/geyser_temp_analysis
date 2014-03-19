@@ -129,4 +129,4 @@ def compare_calc_times_to_actual(calc, actual, sec_tolerance):
 big_loop(4,10,from_unix,to_unix)
 
     
-#gtapip.post_to_geysertimes(p['geyserID'],e_times)
+gtapip.post_to_geysertimes(p['geyserID'],e_times)

@@ -6,36 +6,39 @@ Created on Sun Feb 23 15:49:07 2014
 """
 
 class geyser_logger_analyzer:
-    import gtapi
+    import gtapi as gtapi
+    import gtapi_private as gtp
     import peak_detection as pd
     import scipy
     import scipy.signal as sig
+    import time
+    import numpy as np
     
     def __init__(self, loggerID, geyserID, from_time, to_time):
         self.loggerID = loggerID
         self.geyserID = geyserID
-        self.from_time = from_time
-        self.to_time = to_time
+        self.from_time = int(time.mktime(time.strptime(from_time,'%Y-%m-%d %H:%M:%S')))
+        self.to_time = int(time.mktime(time.strptime(to_time,'%Y-%m-%d %H:%M:%S')))
         
         #get temperature data: x is epoch time, y is temperature
-        x, y = gtapi.gt_loggerdata(self.loggerID,self.from_time,self.to_time)
-        self.actual_times = gtapi.gt_entries(self.geyserID,self.from_time,self.to_time, 1)
+        x, y = self.gtapi.gt_loggerdata(self.loggerID,self.from_time,self.to_time)
+        self.actual_times = self.gtapi.gt_entries(self.geyserID,self.from_time,self.to_time, 1)
         #convert to numpy array
         self.npy = np.asarray(y)
         self.npx = np.asarray(x)
     
     def smooth_temperature(self, filter_width=15):
-        v_smooth = pd.smooth(self.npy,filter_width,'flat')
+        v_smooth = self.pd.smooth(self.npy,filter_width,'flat')
         v_smooth = v_smooth[0:len(self.npy)]
-        self.smoothed_temp = npy - v_smooth
+        self.smoothed_temp = self.npy - v_smooth
         
     def find_peaks(self, snr=10):
-        self.peaks = sig.find_peaks_cwt(self.smoothed_temp,np.arange(1,10),min_snr=snr)
+        self.peaks = self.sig.find_peaks_cwt(self.smoothed_temp,np.arange(1,10),min_snr=snr)
     
     def find_biggest_jumps(self, window=6):
         final = []
         for i in self.peaks:
-            theArea = npy[max(0,i-window/2):min(len(npy)-1,i+window/2)]
+            theArea = self.npy[max(0,i-window/2):min(len(self.npy)-1,i+window/2)]
             jumps = []
             for j in range(1,len(theArea)):
                 jumps.append(theArea[j] - theArea[j-1])
@@ -142,6 +145,9 @@ class geyser_logger_analyzer:
                     
         print self.report_array
         
+    def post_proposed(self):
+        self.gtp.post_to_geysertimes(self.geyserID,self.proposed_times)
+        
 # misc functions
 def remove_duplicates(seq):
     seen = set()
@@ -149,11 +155,14 @@ def remove_duplicates(seq):
     return [ x for x in seq if x not in seen and not seen_add(x)]
     
     
-from_unix = 1352314261
-to_unix =   1353414261
+from_unix = '2011-11-01 00:00:00'
+to_unix =   '2012-12-01 00:00:00'
 
 myLog = geyser_logger_analyzer(4,10,from_unix,to_unix)
-myLog.optimize()
+myLog.run_detection(60,100,30)
+#myLog.post_proposed()
+
+#myLog.optimize()
 
 #myLog.plot_false_positives(6000)
 
