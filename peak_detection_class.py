@@ -68,6 +68,34 @@ class geyser_logger_analyzer:
         self.find_biggest_jumps(jump_window)
         self.set_proposed_times()
                  
+    def find_durations(self):
+        self.durations = []
+        decrease_length = 20 # # of points to look for decreasing temperatures
+        look_ahead = 500 # points into the future to look for temperature dropoff
+        #find first time that X points are all decreasing
+        #find inflection point
+        #subtract time from proposed_time / 60 for duration
+        for i in self.proposed_times:
+            idx = np.where(self.npx == i)
+            dur = find_duration(idx, decrease_length, look_ahead)
+            self.durations.append(dur)
+            
+    def find_end_time(self, idx_start, decrease_length, look_ahead):
+         for j in range(0,look_ahead): #how far out we go to find decreases
+                #section to analyze
+                d = self.npx[idx_start+j:idx_start+j+decrease_length]
+                if (max(diff(d)) < 0): #then it's all decreasing
+                    #find inflection point
+                    #where differences go from - to +
+                    dd = diff(d)
+                    for z in range(0,len(dd)):
+                        if (dd[z] <= 0 and dd[z+1] >=0):
+                            end_idx = idx_start + j + z
+                            end = self.npx[end_idx]
+                            duration = (end - i) / 60
+                            return duration
+        return 0 # if no end found
+        
     def report(self, sec_tolerance):
         #loop thru calc, find matches
         #find true positive
@@ -86,7 +114,7 @@ class geyser_logger_analyzer:
             else:
                 self.false_positive.append(calc_time)
                 
-        for i in range(0, len(actual_times)):
+        for i in range(0, len(self.actual_times)):
             a_time = self.actual_times[i]
             closest_calc = min(self.proposed_times, key=lambda x:abs(x-a_time))
             dist = abs(closest_calc - a_time)
@@ -155,11 +183,12 @@ def remove_duplicates(seq):
     return [ x for x in seq if x not in seen and not seen_add(x)]
     
     
-from_unix = '2011-11-01 00:00:00'
-to_unix =   '2012-12-01 00:00:00'
+from_time = '2011-11-01 00:00:00'
+to_time =   '2011-12-01 00:00:00'
 
-myLog = geyser_logger_analyzer(4,10,from_unix,to_unix)
+myLog = geyser_logger_analyzer(5,1,from_time,to_time)
 myLog.run_detection(60,100,30)
+myLog.report(60)
 #myLog.post_proposed()
 
 #myLog.optimize()
