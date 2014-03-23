@@ -16,10 +16,11 @@ params = {'Whirligig': {'geyserID': 79, 'loggerID': 22, 'filter_width': 30, 'snr
           'Aurum': {'geyserID': 10, 'loggerID': 4, 'filter_width': 60, 'snr': 100, 'jump_window': 30},
           'Plume': {'geyserID': x, 'loggerID': 17, 'filter_width': 60, 'snr': 100, 'jump_window': 10},
           #'Little Squirt': {'geyserID': x, 'loggerID': 14, 'filter_width': 60, 'snr': 10, 'jump_window': 10},
-          'Lion': {'geyserID': x, 'loggerID': 13, 'filter_width': 60, 'snr': 25, 'jump_window': 10},
+          'Lion': {'geyserID': 14, 'loggerID': 13, 'filter_width': 60, 'snr': 25, 'jump_window': 10},
           'Beehive': {'geyserID': 1, 'loggerID': 5, 'filter_width': 60, 'snr': 50, 'jump_window': 30},
-          'Old Faithful': {'geyserID': 2, 'loggerID': 16, 'filter_width': 60, 'snr': 50, 'jump_window': 30}
-
+          'Old Faithful': {'geyserID': 2, 'loggerID': 16, 'filter_width': 60, 'snr': 50, 'jump_window': 30},
+          'Artemisia': {'geyserID': 19, 'loggerID': 3, 'filter_width': 60, 'snr': 100, 'jump_window': 300},
+        'Riverside': {'geyserID': 7, 'loggerID': 18, 'filter_width': 60, 'snr': 50, 'jump_window': 60}
 }
 
 geyser = 'Aurum'

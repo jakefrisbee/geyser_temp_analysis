@@ -3,7 +3,7 @@
 import requests #for API calls to GeyserTimes.org
 import json #API returns JSON
 
-api_str = "http://localhost/api/sandbox"
+api_str = "http://www.geysertimes.org/api/v2"
 
 def gt_loggerdata(loggerID,epoch_from,epoch_to):
 

@@ -4,6 +4,7 @@ Created on Sun Feb 23 15:49:07 2014
 
 @author: Jake
 """
+import time
 
 class geyser_logger_analyzer:
     import gtapi as gtapi
@@ -11,7 +12,7 @@ class geyser_logger_analyzer:
     import peak_detection as pd
     import scipy
     import scipy.signal as sig
-    import time
+    
     import numpy as np
     
     def __init__(self, loggerID, geyserID, from_time, to_time):
@@ -53,20 +54,24 @@ class geyser_logger_analyzer:
     def set_proposed_times(self):
         self.proposed_times = []
         self.proposed_intervals = []
+        self.proposed_indexes = []
         
         for i in self.big_jumps:
             if (i < len(self.npx)):
                 self.proposed_times.append(self.npx[i])
+                self.proposed_indexes.append(i)
             
         for i in range(1,len(self.proposed_times)):
             self.proposed_intervals.append(self.proposed_times[i] - self.proposed_times[i-1])
            
         
-    def run_detection(self, filter_width, snr, jump_window):
+    def run_detection(self, filter_width, snr, jump_window, b_durations):
         self.smooth_temperature(filter_width)
         self.find_peaks(snr)
         self.find_biggest_jumps(jump_window)
         self.set_proposed_times()
+        if (b_durations):
+            self.find_durations()
                  
     def find_durations(self):
         self.durations = []
@@ -75,26 +80,26 @@ class geyser_logger_analyzer:
         #find first time that X points are all decreasing
         #find inflection point
         #subtract time from proposed_time / 60 for duration
-        for i in self.proposed_times:
-            idx = np.where(self.npx == i)
-            dur = find_duration(idx, decrease_length, look_ahead)
+        for i in self.proposed_indexes:
+            dur = self.find_end_time(i, decrease_length, look_ahead)
             self.durations.append(dur)
             
     def find_end_time(self, idx_start, decrease_length, look_ahead):
-         for j in range(0,look_ahead): #how far out we go to find decreases
-                #section to analyze
-                d = self.npx[idx_start+j:idx_start+j+decrease_length]
-                if (max(diff(d)) < 0): #then it's all decreasing
-                    #find inflection point
-                    #where differences go from - to +
-                    dd = diff(d)
-                    for z in range(0,len(dd)):
-                        if (dd[z] <= 0 and dd[z+1] >=0):
-                            end_idx = idx_start + j + z
-                            end = self.npx[end_idx]
-                            duration = (end - i) / 60
-                            return duration
-        return 0 # if no end found
+        duration = 0 #default
+        for j in range(0,look_ahead): #how far out we go to find decreases
+        #section to analyze
+            d = self.npy[idx_start+j:idx_start+j+decrease_length]
+            dd = diff(d)
+            if (max(dd) < 0): #then it's all decreasing
+                #find inflection point
+                #where differences go from - to +
+                ddd = diff(dd)
+                for z in range(0,len(ddd) - 1):
+                    if (ddd[z] <= 0 and ddd[z+1] >=0):
+                        end_idx = idx_start + j + z
+                        end = self.npx[end_idx]
+                        duration = (end - self.npx[idx_start]) / 60
+                        return duration
         
     def report(self, sec_tolerance):
         #loop thru calc, find matches
@@ -141,7 +146,14 @@ class geyser_logger_analyzer:
             
             figure("False +: " + str(i))
             plot(x[idx-plot_window:idx+plot_window], y[idx-plot_window:idx+plot_window])
+            
+    def plot_series(self):
+        clf()
+        plot(self.npx,self.npy)
     
+        for i in self.proposed_indexes:
+            plot(self.npx[i],60,'r+')
+
     def optimize(self):
         self.report_array = {}
         
@@ -183,12 +195,13 @@ def remove_duplicates(seq):
     return [ x for x in seq if x not in seen and not seen_add(x)]
     
     
-from_time = '2011-11-01 00:00:00'
-to_time =   '2011-12-01 00:00:00'
+from_time = '2011-11-06 11:00:00'
+to_time =   '2012-02-01 00:00:00'
 
-myLog = geyser_logger_analyzer(5,1,from_time,to_time)
-myLog.run_detection(60,100,30)
-myLog.report(60)
+myLog = geyser_logger_analyzer(18,7,from_time,to_time)
+myLog.run_detection(60,50,60,0)
+myLog.plot_series()
+#myLog.report(60)
 #myLog.post_proposed()
 
 #myLog.optimize()
