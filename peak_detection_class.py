@@ -194,12 +194,30 @@ def remove_duplicates(seq):
     seen_add = seen.add
     return [ x for x in seq if x not in seen and not seen_add(x)]
     
-    
-from_time = '2011-11-06 11:00:00'
-to_time =   '2012-02-01 00:00:00'
 
-myLog = geyser_logger_analyzer(18,7,from_time,to_time)
-myLog.run_detection(60,50,60,0)
+params = {
+'Artemisia': {'geyserID': 19, 'loggerID': 3, 'filter_width': 60, 'snr': 100, 'jump_window': 300, 'duration': 1},
+'Aurum': {'geyserID': 10, 'loggerID': 4, 'filter_width': 60, 'snr': 100, 'jump_window': 30, 'duration': 0},
+'Beehive': {'geyserID': 1, 'loggerID': 5, 'filter_width': 60, 'snr': 50, 'jump_window': 30, 'duration': 0},
+'Fountain': {'geyserID': 15, 'loggerID': 9, 'filter_width': 60, 'snr': 50, 'jump_window': 60, 'duration': 1},
+'Great Fountain': {'geyserID': 16, 'loggerID': 11, 'filter_width': 60, 'snr': 30, 'jump_window': 60, 'duration': 1},
+'Lion': {'geyserID': 14, 'loggerID': 13, 'filter_width': 60, 'snr': 25, 'jump_window': 10, 'duration': 0},
+'Little Squirt': {'geyserID': 36, 'loggerID': 14, 'filter_width': 60, 'snr': 10, 'jump_window': 10, 'duration': 0},
+'Oblong': {'geyserID': 23, 'loggerID': 15, 'filter_width': 60, 'snr': 15, 'jump_window': 120, 'duration': 0},
+'Old Faithful': {'geyserID': 2, 'loggerID': 16, 'filter_width': 60, 'snr': 50, 'jump_window': 30, 'duration': 0},
+'Plume': {'geyserID': 3, 'loggerID': 17, 'filter_width': 60, 'snr': 100, 'jump_window': 10, 'duration': 0},
+#'Riverside': {'geyserID': 7, 'loggerID': 18, 'filter_width': 60, 'snr': 50, 'jump_window': 60, 'duration': 0},
+'Whirligig': {'geyserID': 79, 'loggerID': 22, 'filter_width': 30, 'snr': 3, 'jump_window': 6, 'duration': 0}
+}
+    
+from_time = '2012-11-06 11:00:00'
+to_time =   '2012-12-01 00:00:00'
+
+geyser = 'Great Fountain'
+p = params[geyser]
+
+myLog = geyser_logger_analyzer(p['loggerID'], p['geyserID'], from_time, to_time)
+myLog.run_detection(p['filter_width'], p['snr'], p['jump_window'], p['duration'])
 myLog.plot_series()
 #myLog.report(60)
 #myLog.post_proposed()
