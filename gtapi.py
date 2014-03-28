@@ -30,13 +30,16 @@ def gt_entries(geyserID, epoch_from, epoch_to, e_only):
     r = requests.get(logger_url)
     r_json = json.loads(r.text)
     
-    mylist = r_json['entries']
 
     data = []
 
-    for i in range(0,len(mylist) - 1):
-        if (e_only):
-            if (mylist[i]['E'] == 1):
-                data.append(mylist[i]['time'])
-
-    return data
+    if (r_json['status'] == "null"):
+        return data
+    else:
+        mylist = r_json['entries']
+        for i in range(0,len(mylist) - 1):
+            if (e_only):
+                if (mylist[i]['E'] == 1):
+                    data.append(mylist[i]['time'])
+    
+        return data

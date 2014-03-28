@@ -72,11 +72,16 @@ class geyser_logger_analyzer:
            
         
     def run_detection(self, filter_width, snr, jump_window, b_durations):
+        print "smoothing temperature at %s" % filter_width
         self.smooth_temperature(filter_width)
+        print "finding peaks, snr: %s" % snr
         self.find_peaks(snr)
+        print "locating biggest jump within %s" % jump_window
         self.find_biggest_jumps(jump_window)
+        print "setting proposed times"
         self.set_proposed_times()
         if (b_durations):
+            print "finding durations"
             self.find_durations()
                  
     def find_durations(self):
