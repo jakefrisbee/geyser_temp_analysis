@@ -10,10 +10,10 @@ import time
 
 params = {
 #'Aurum': {'geyserID': 10, 'loggerID': 4, 'filter_width': 60, 'snr': 100, 'jump_window': 30, 'duration': 0},
-'Beehive': {'geyserID': 1, 'loggerID': 5, 'filter_width': 60, 'snr': 50, 'jump_window': 30, 'duration': 0},
+'Beehive': {'geyserID': 1, 'loggerID': 5, 'filter_width': 60, 'snr': 50, 'jump_window': 300, 'duration': 0},
 #'Castle': {'geyserID': 5, 'loggerID': 6, 'filter_width': 60, 'snr': 50, 'jump_window': 60, 'duration': 0},
-#'Daisy': {'geyserID': 4, 'loggerID': 7, 'filter_width': 60, 'snr': 50, 'jump_window': 60, 'duration': 0}
-#'Grand': {'geyserID': 13, 'loggerID': 10, 'filter_width': 60, 'snr': 50, 'jump_window': 60, 'duration': 0},
+#'Daisy': {'geyserID': 4, 'loggerID': 7, 'filter_width': 60, 'snr': 50, 'jump_window': 120, 'duration': 0}
+#'Grand': {'geyserID': 13, 'loggerID': 10, 'filter_width': 60, 'snr': 50, 'jump_window': 240, 'duration': 0},
 #'Lion': {'geyserID': 14, 'loggerID': 13, 'filter_width': 60, 'snr': 25, 'jump_window': 10, 'duration': 0},
 #'Oblong': {'geyserID': 23, 'loggerID': 15, 'filter_width': 60, 'snr': 15, 'jump_window': 120, 'duration': 0},
 #'Old Faithful': {'geyserID': 2, 'loggerID': 16, 'filter_width': 60, 'snr': 50, 'jump_window': 30, 'duration': 0},
