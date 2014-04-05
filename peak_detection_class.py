@@ -56,7 +56,17 @@ class geyser_logger_analyzer:
                 final.append(max_index)
             
         self.big_jumps = remove_duplicates(final)
-    
+        
+    def find_local_max(self, window=6):
+        final = []
+        for i in self.peaks:
+            theArea = self.npy[max(0,i-window/2):min(len(self.npy)-1,i+window/2)]
+            
+            max_index = theArea.argmax(axis=0)
+            final.append(max_index)
+            
+        self.big_jumps = remove_duplicates(final)
+        
     def set_proposed_times(self):
         self.proposed_times = []
         self.proposed_intervals = []
