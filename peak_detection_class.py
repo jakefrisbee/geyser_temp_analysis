@@ -71,13 +71,17 @@ class geyser_logger_analyzer:
             self.proposed_intervals.append(self.proposed_times[i] - self.proposed_times[i-1])
            
         
-    def run_detection(self, filter_width, snr, jump_window, b_durations):
+    def run_detection(self, filter_width, snr, jump_or_max, jump_window, b_durations):
         print "smoothing temperature at %s" % filter_width
         self.smooth_temperature(filter_width)
         print "finding peaks, snr: %s" % snr
         self.find_peaks(snr)
-        print "locating biggest jump within %s" % jump_window
-        self.find_biggest_jumps(jump_window)
+        if (jump_or_max == 'jump'):
+            print "locating biggest jump within %s" % jump_window
+            self.find_biggest_jumps(jump_window)
+        else:
+            print "finding local max within %s" % jump_window
+            self.find_local_max(jump_window)
         print "setting proposed times"
         self.set_proposed_times()
         if (b_durations):

@@ -10,7 +10,7 @@ import time
 
 params = {
 #'Aurum': {'geyserID': 10, 'loggerID': 4, 'filter_width': 60, 'snr': 100, 'jump_window': 30, 'duration': 0},
-'Beehive': {'geyserID': 1, 'loggerID': 5, 'filter_width': 60, 'snr': 50, 'jump_window': 300, 'duration': 0},
+'Beehive': {'geyserID': 1, 'loggerID': 5, 'filter_width': 60, 'snr': 50, 'jump_or_max': 'max', 'jump_window': 300, 'duration': 0},
 #'Castle': {'geyserID': 5, 'loggerID': 6, 'filter_width': 60, 'snr': 50, 'jump_window': 60, 'duration': 0},
 #'Daisy': {'geyserID': 4, 'loggerID': 7, 'filter_width': 60, 'snr': 50, 'jump_window': 120, 'duration': 0}
 #'Grand': {'geyserID': 13, 'loggerID': 10, 'filter_width': 60, 'snr': 50, 'jump_window': 240, 'duration': 0},
@@ -53,7 +53,7 @@ for geyser in params:
         myLog = pdc.geyser_logger_analyzer(p['loggerID'], p['geyserID'], from_time, to_time)
 
         if (len(myLog.npx) > 60):
-            myLog.run_detection(p['filter_width'], p['snr'], p['jump_window'], p['duration'])
+            myLog.run_detection(p['filter_width'], p['snr'], p['jump_or_max'], p['jump_window'], p['duration'])
             myLog.post_proposed()
         else:
             print "No temperature data."
