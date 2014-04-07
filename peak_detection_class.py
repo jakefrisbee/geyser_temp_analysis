@@ -102,9 +102,9 @@ class geyser_logger_analyzer:
         self.durations = []
         decrease_length = 20 # # of points to look for decreasing temperatures
         look_ahead = 500 # points into the future to look for temperature dropoff
-        #find first time that X points are all decreasing
-        #find inflection point
-        #subtract time from proposed_time / 60 for duration
+        # find first time that X points are all decreasing
+        # find inflection point
+        # subtract time from proposed_time / 60 for duration
         for i in self.proposed_indexes:
             dur = self.find_end_time(i, decrease_length, look_ahead)
             self.durations.append(dur)
@@ -115,12 +115,12 @@ class geyser_logger_analyzer:
         #section to analyze
             d = self.npy[idx_start+j:idx_start+j+decrease_length]
             dd = diff(d)
-            if (max(dd) < 0): #then it's all decreasing
-                #find inflection point
-                #where differences go from - to +
+            if (max(dd) < 0): # then it's all decreasing
+                # find inflection point
+                # where differences go from - to +
                 ddd = diff(dd)
                 for z in range(0,len(ddd) - 1):
-                    if (ddd[z] <= 0 and ddd[z+1] >=0):
+                    if (ddd[z] <= 0 and ddd[z+1] >= 0):
                         end_idx = idx_start + j + z
                         end = self.npx[end_idx]
                         duration = (end - self.npx[idx_start]) / 60
@@ -211,7 +211,7 @@ class geyser_logger_analyzer:
         print self.report_array
         
     def post_proposed(self):
-        self.gtp.post_to_geysertimes(self.geyserID,self.proposed_times)
+        self.gtp.post_to_geysertimes(self.geyserID, self.proposed_times, self.durations)
         
 # misc functions
 def remove_duplicates(seq):
