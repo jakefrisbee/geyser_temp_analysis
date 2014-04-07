@@ -6,13 +6,14 @@ Created on Sun Feb 23 15:49:07 2014
 """
 import time
 import numpy as np
+import gtapi as gtapi
+import peak_detection as pd
+import scipy.signal as sig
+import gtapi_private as gtp
+import scipy
+import matplotlib.pyplot as plt
 
 class geyser_logger_analyzer:
-    import gtapi as gtapi
-    import gtapi_private as gtp
-    import peak_detection as pd
-    import scipy
-    import scipy.signal as sig
     
     
     
@@ -28,19 +29,19 @@ class geyser_logger_analyzer:
             self.to_time = int(time.mktime(time.strptime(to_time,'%Y-%m-%d %H:%M:%S')))
         
         #get temperature data: x is epoch time, y is temperature
-        x, y = self.gtapi.gt_loggerdata(self.loggerID,self.from_time,self.to_time)
-        self.actual_times = self.gtapi.gt_entries(self.geyserID,self.from_time,self.to_time, 1)
+        x, y = gtapi.gt_loggerdata(self.loggerID,self.from_time,self.to_time)
+        self.actual_times = gtapi.gt_entries(self.geyserID,self.from_time,self.to_time, 1)
         #convert to numpy array
         self.npy = np.asarray(y)
         self.npx = np.asarray(x)
     
     def smooth_temperature(self, filter_width=15):
-        v_smooth = self.pd.smooth(self.npy,filter_width,'flat')
+        v_smooth = pd.smooth(self.npy,filter_width,'flat')
         v_smooth = v_smooth[0:len(self.npy)]
         self.smoothed_temp = self.npy - v_smooth
         
     def find_peaks(self, snr=10):
-        self.peaks = self.sig.find_peaks_cwt(self.smoothed_temp,np.arange(1,10),min_snr=snr)
+        self.peaks = sig.find_peaks_cwt(self.smoothed_temp,np.arange(1,10),min_snr=snr)
     
     def find_biggest_jumps(self, window=6):
         final = []
@@ -114,11 +115,11 @@ class geyser_logger_analyzer:
         for j in range(0,look_ahead): #how far out we go to find decreases
         #section to analyze
             d = self.npy[idx_start+j:idx_start+j+decrease_length]
-            dd = diff(d)
+            dd = np.diff(d)
             if (max(dd) < 0): # then it's all decreasing
                 # find inflection point
                 # where differences go from - to +
-                ddd = diff(dd)
+                ddd = np.diff(dd)
                 for z in range(0,len(ddd) - 1):
                     if (ddd[z] <= 0 and ddd[z+1] >= 0):
                         end_idx = idx_start + j + z
@@ -164,20 +165,20 @@ class geyser_logger_analyzer:
                         "missed": len(self.missed)}
     
     def plot_false_positives(self, plot_window = 60):
-        clf()        
+        plt.clf()        
         for i in self.false_positive:
             idx = np.where(self.npx == i)
             idx = idx[0][0]
             
-            figure("False +: " + str(i))
-            plot(x[idx-plot_window:idx+plot_window], y[idx-plot_window:idx+plot_window])
+            plt.figure("False +: " + str(i))
+            plt.plot(self.npx[idx-plot_window:idx+plot_window], self.npy[idx-plot_window:idx+plot_window])
             
     def plot_series(self):
-        clf()
-        plot(self.npx,self.npy)
+        plt.clf()
+        plt.plot(self.npx,self.npy)
     
         for i in self.proposed_indexes:
-            plot(self.npx[i],60,'r+')
+            plt.plot(self.npx[i],60,'r+')
 
     def optimize(self):
         self.report_array = {}
@@ -211,7 +212,7 @@ class geyser_logger_analyzer:
         print self.report_array
         
     def post_proposed(self):
-        self.gtp.post_to_geysertimes(self.geyserID, self.proposed_times, self.durations)
+        gtp.post_to_geysertimes(self.geyserID, self.proposed_times, self.durations)
         
 # misc functions
 def remove_duplicates(seq):
