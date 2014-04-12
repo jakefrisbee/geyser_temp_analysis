@@ -124,8 +124,8 @@ class geyser_logger_analyzer:
                     if (ddd[z] <= 0 and ddd[z+1] >= 0):
                         end_idx = idx_start + j + z
                         end = self.npx[end_idx]
-                        duration = (end - self.npx[idx_start]) / 60
-                        return duration
+                        #duration = (end - self.npx[idx_start]) / 60
+                        return end
         
     def report(self, sec_tolerance):
         #loop thru calc, find matches
