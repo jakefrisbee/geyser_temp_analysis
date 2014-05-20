@@ -64,7 +64,8 @@ class geyser_logger_analyzer:
             theArea = self.npy[max(0,i-window/2):min(len(self.npy)-1,i+window/2)]
             
             max_index = theArea.argmax(axis=0)
-            final.append(max_index)
+            real_index = i - window/2 + max_index + 1
+            final.append(real_index)
             
         self.big_jumps = remove_duplicates(final)
         
@@ -95,12 +96,12 @@ class geyser_logger_analyzer:
             self.find_local_max(jump_window)
         print "setting proposed times"
         self.set_proposed_times()
+        self.durations = []
         if (b_durations):
             print "finding durations"
             self.find_durations()
                  
     def find_durations(self):
-        self.durations = []
         decrease_length = 20 # # of points to look for decreasing temperatures
         look_ahead = 500 # points into the future to look for temperature dropoff
         # find first time that X points are all decreasing
