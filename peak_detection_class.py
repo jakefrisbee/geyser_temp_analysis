@@ -112,11 +112,12 @@ class geyser_logger_analyzer:
             self.durations.append(dur)
             
     def find_end_time(self, idx_start, decrease_length, look_ahead):
-        duration = 0 #default
         for j in range(0,look_ahead): #how far out we go to find decreases
         #section to analyze
             d = self.npy[idx_start+j:idx_start+j+decrease_length]
             dd = np.diff(d)
+            if not any(dd):
+                return None
             if (max(dd) < 0): # then it's all decreasing
                 # find inflection point
                 # where differences go from - to +
@@ -127,6 +128,9 @@ class geyser_logger_analyzer:
                         end = self.npx[end_idx]
                         #duration = (end - self.npx[idx_start]) / 60
                         return end
+                        
+    def find_end_time_two(self, idx_start, check_number, true_number):
+        return 1
         
     def report(self, sec_tolerance):
         #loop thru calc, find matches
