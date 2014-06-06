@@ -103,34 +103,49 @@ class geyser_logger_analyzer:
                  
     def find_durations(self):
         decrease_length = 20 # # of points to look for decreasing temperatures
+        decrease_count_threshold = 19 # # of points that must be decreasing
         look_ahead = 500 # points into the future to look for temperature dropoff
         # find first time that X points are all decreasing
         # find inflection point
         # subtract time from proposed_time / 60 for duration
         for i in self.proposed_indexes:
-            dur = self.find_end_time(i, decrease_length, look_ahead)
+            dur = self.find_end_time(i, decrease_length, decrease_count_threshold, look_ahead)
             self.durations.append(dur)
             
-    def find_end_time(self, idx_start, decrease_length, look_ahead):
+    def find_end_time(self, idx_start, decrease_length, decrease_count_threshold, look_ahead):
+        inflection_scores = []
+        
         for j in range(0,look_ahead): #how far out we go to find decreases
         #section to analyze
             d = self.npy[idx_start+j:idx_start+j+decrease_length]
             dd = np.diff(d)
             if not any(dd):
                 return None
-            if (max(dd) < 0): # then it's all decreasing
+                
+            decreases = sum(i < 0 for i in dd) #count of decreases in d
+            
+            if (decreases >= decrease_count_threshold): # passes threshold
+                
+                # throw out any increases
+                #dd[:] = [x for x in dd if x > 0]                
                 # find inflection point
                 # where differences go from - to +
                 ddd = np.diff(dd)
-                for z in range(0,len(ddd) - 1):
-                    if (ddd[z] <= 0 and ddd[z+1] >= 0):
-                        end_idx = idx_start + j + z
-                        end = self.npx[end_idx]
-                        #duration = (end - self.npx[idx_start]) / 60
-                        return end
-                        
-    def find_end_time_two(self, idx_start, check_number, true_number):
-        return 1
+                ddd_length = len(ddd)
+                
+                #evaluate second derivatives before and after each point
+                for z in range(1,ddd_length - 1):
+                    before = ddd[0:z]
+                    after = ddd[z+1:ddd_length + 1]
+                    
+                    before_score = len([x for x in before if x <= 0]) / len(before)
+                    after_score = len([x for x in after if x >= 0]) / len(after)
+                    
+                    inflection_scores.append( [z, np.mean(before), np.mean(after)] )
+                    
+                    
+                print(inflection_scores)
+                       
         
     def report(self, sec_tolerance):
         #loop thru calc, find matches
