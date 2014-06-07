@@ -23,7 +23,7 @@ params = {
 #'Turban': {'geyserID': 28, 'loggerID': 20, 'filter_width': 60, 'snr': 100, 'jump_or_max': 'max', 'jump_window': 10, 'duration': 0},
 #duration
 #'Artemisia': {'geyserID': 19, 'loggerID': 3, 'filter_width': 60, 'snr': 100, 'jump_or_max': 'jump', 'jump_window': 300, 'duration': 1},
-'Fountain': {'geyserID': 15, 'loggerID': 9, 'filter_width': 60, 'snr': 50, 'jump_or_max': 'jump', 'jump_window': 120, 'duration': 1},
+'Fountain': {'geyserID': 15, 'loggerID': 9, 'filter_width': 60, 'snr': 50, 'jump_or_max': 'jump', 'jump_window': 120, 'duration': 1, 'duration_end_point': 2},
 #'Grotto': {'geyserID': 21, 'loggerID': 12, 'filter_width': 60, 'snr': 50, 'jump_or_max': 'max', 'jump_window': 60, 'duration': 1},
 #'Spouter': {'geyserID': 50, 'loggerID': 19, 'filter_width': 60, 'snr': 100, 'jump_or_max': 'max', 'jump_window': 30, 'duration': 1},
 #YVO
@@ -37,27 +37,28 @@ params_drops = {
 'Riverside': {'geyserID': 7, 'loggerID': 18}
 }
 
-time_length = 2 * 30 * 24 * 60 * 60 # 2 months at a time for temperature analysis
+time_length = 0.75 * 30 * 24 * 60 * 60 # 2 months at a time for temperature analysis
 
 for geyser in params:
     print "Running. . . " + geyser
     p = params[geyser]
 
-    from_time = gtapip.get_latest_etime(p['geyserID'])    
+    from_time = gtapip.get_latest_etime(p['geyserID']) + 60   
     
     print "Latest E Time: " + str(from_time)
     
     while (from_time <= int(time.time())):
         
         to_time = from_time + time_length
-        myLog = pdc.geyser_logger_analyzer(p['loggerID'], p['geyserID'], from_time, to_time)
+        myLog = pdc.geyser_logger_analyzer(p['loggerID'], p['geyserID'], int(from_time), int(to_time))
 
         if (len(myLog.npx) > 60):
             myLog.run_detection(p['filter_width'], 
                                 p['snr'], 
                                 p['jump_or_max'], 
                                 p['jump_window'], 
-                                p['duration'])
+                                p['duration'],
+                                p['duration_end_point'])
             myLog.post_proposed()
         else:
             print "No temperature data."

@@ -83,7 +83,7 @@ class geyser_logger_analyzer:
             self.proposed_intervals.append(self.proposed_times[i] - self.proposed_times[i-1])
            
         
-    def run_detection(self, filter_width, snr, jump_or_max, jump_window, b_durations):
+    def run_detection(self, filter_width, snr, jump_or_max, jump_window, b_durations, duration_end_point):
         print "smoothing temperature at %s" % filter_width
         self.smooth_temperature(filter_width)
         print "finding peaks, snr: %s" % snr
@@ -99,24 +99,24 @@ class geyser_logger_analyzer:
         self.durations = []
         if (b_durations):
             print "finding durations"
-            self.find_durations()
+            self.find_durations(duration_end_point)
                  
-    def find_durations(self):
-        decrease_length = 20 # # of points to look for decreasing temperatures
-        decrease_count_threshold = 19 # # of points that must be decreasing
+    def find_durations(self, duration_end_point):
+        decrease_length = 10 # # of points to look for decreasing temperatures
+        decrease_count_threshold = 8 # # of points that must be decreasing
         look_ahead = 500 # points into the future to look for temperature dropoff
         # find first time that X points are all decreasing
         # find inflection point
         # subtract time from proposed_time / 60 for duration
         for i in self.proposed_indexes:
-            dur = self.find_end_time(i, decrease_length, decrease_count_threshold, look_ahead)
+            dur = self.find_end_time(i, decrease_length, decrease_count_threshold, look_ahead, duration_end_point)
             self.durations.append(dur)
-            
+    '''        
     def find_end_time(self, idx_start, decrease_length, decrease_count_threshold, look_ahead):
         inflection_scores = []
         
         for j in range(0,look_ahead): #how far out we go to find decreases
-        #section to analyze
+            #section to analyze
             d = self.npy[idx_start+j:idx_start+j+decrease_length]
             dd = np.diff(d)
             if not any(dd):
@@ -142,11 +142,26 @@ class geyser_logger_analyzer:
                     after_score = len([x for x in after if x >= 0]) / len(after)
                     
                     inflection_scores.append( [z, np.mean(before), np.mean(after)] )
-                    
-                    
+                
+                plt.clf()
+                plt.plot(ddd)
+                plt.pause(1)
                 print(inflection_scores)
-                       
+    '''                   
+    def find_end_time(self, idx_start, decrease_length, decrease_count_threshold, look_ahead, end_point):
         
+        for j in range(0,look_ahead): #how far out we go to find decreases
+            #section to analyze
+            d = self.npy[idx_start+j:idx_start+j+decrease_length]
+            dd = np.diff(d)
+            if not any(dd):
+                return None
+                
+            decreases = sum(i < 0 for i in dd) #count of decreases in d
+            
+            if (decreases >= decrease_count_threshold and dd[0] < 0): # passes threshold count and first point is decreasing
+                return self.npx[idx_start + j + end_point]
+                
     def report(self, sec_tolerance):
         #loop thru calc, find matches
         #find true positive
