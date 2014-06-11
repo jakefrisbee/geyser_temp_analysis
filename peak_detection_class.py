@@ -84,7 +84,7 @@ class geyser_logger_analyzer:
             theArea = self.npy[max(0,i-window/2):min(len(self.npy)-1,i+window/2)]
             
             max_index = theArea.argmax(axis=0)
-            real_index = i - window/2 + max_index + 1
+            real_index = i - window/2 + max_index #+ 1
             final.append(real_index)
             
         self.big_jumps = remove_duplicates(final)
@@ -103,32 +103,32 @@ class geyser_logger_analyzer:
             self.proposed_intervals.append(self.proposed_times[i] - self.proposed_times[i-1])
            
         
-    def run_detection(self, filter_width, snr, jump_or_max, jump_window, b_durations, duration_end_point):
+    def run_detection(self, p):       
         
-        if (jump_or_max == 'jump'):
-            print "smoothing temperature at %s" % filter_width
-            self.smooth_temperature(filter_width)
-            print "finding peaks, snr: %s" % snr
-            self.find_peaks(snr)
-            print "locating biggest jump within %s" % jump_window
-            self.find_biggest_jumps(jump_window)
-        elif (jump_or_max == 'max'):
-            print "smoothing temperature at %s" % filter_width
-            self.smooth_temperature(filter_width)
-            print "finding peaks, snr: %s" % snr
-            self.find_peaks(snr)
-            print "finding local max within %s" % jump_window
-            self.find_local_max(jump_window)
-        elif (jump_or_max == 'first_jump'):
-            print "smoothing temperature at %s" % filter_width
-            self.smooth_temperature(filter_width)
-            print "finding peaks, snr: %s" % snr
-            self.find_peaks(snr)
-            print "finding first jumps within %s" % jump_window
+        if (p['jump_or_max'] == 'jump'):
+            print "smoothing temperature at %s" % p['filter_width']
+            self.smooth_temperature(p['filter_width'])
+            print "finding peaks, snr: %s" % p['snr']
+            self.find_peaks(p['snr'])
+            print "locating biggest jump within %s" % p['jump_window']
+            self.find_biggest_jumps(p['jump_window'])
+        elif (p['jump_or_max'] == 'max'):
+            print "smoothing temperature at %s" % p['filter_width']
+            self.smooth_temperature(p['filter_width'])
+            print "finding peaks, snr: %s" % p['snr']
+            self.find_peaks(p['snr'])
+            print "finding local max within %s" % p['jump_window']
+            self.find_local_max(p['jump_window'])
+        elif (p['jump_or_max'] == 'first_jump'):
+            print "smoothing temperature at %s" % p['filter_width']
+            self.smooth_temperature(p['filter_width'])
+            print "finding peaks, snr: %s" % p['snr']
+            self.find_peaks(p['snr'])
+            print "finding first jumps within %s" % p['jump_window']
             #find biggest jumps first
-            self.find_biggest_jumps(jump_window)
+            self.find_biggest_jumps(p['jump_window'])
             #then refine estimate
-            self.find_first_jumps(jump_window)
+            self.find_first_jumps(p['jump_window'])
         elif (self.geyser == 'Riverside'):
             print "Riverside detection..."
             self.riverside()
@@ -138,9 +138,9 @@ class geyser_logger_analyzer:
         print "setting proposed times"
         self.set_proposed_times()
         self.durations = []
-        if (b_durations):
+        if ('duration' in p):
             print "finding durations"
-            self.find_durations(duration_end_point)
+            self.find_durations(p['duration'])
     
     def riverside(self):
         final = []
@@ -180,15 +180,16 @@ class geyser_logger_analyzer:
        
         self.big_jumps = final
         
-    def find_durations(self, duration_end_point):
-        decrease_length = 12 # # of points to look for decreasing temperatures
-        decrease_count_threshold = 10 # # of points that must be decreasing
-        look_ahead = 500 # points into the future to look for temperature dropoff
+    def find_durations(self, params):
         # find first time that X points are all decreasing
         # find inflection point
         # subtract time from proposed_time / 60 for duration
         for i in self.proposed_indexes:
-            dur = self.find_end_time(i, decrease_length, decrease_count_threshold, look_ahead, duration_end_point)
+            dur = self.find_end_time(i, 
+                                     params['decrease_length'], 
+                                     params['decrease_count_threshold'], 
+                                     params['look_ahead'], 
+                                     params['duration_end_point'])
             self.durations.append(dur)
     '''        
     def find_end_time(self, idx_start, decrease_length, decrease_count_threshold, look_ahead):
