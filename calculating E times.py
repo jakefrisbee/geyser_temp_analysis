@@ -24,14 +24,21 @@ params = {
 #duration
 #'Artemisia': {'geyserID': 19, 'loggerID': 3, 'filter_width': 60, 'snr': 100, 'jump_or_max': 'jump', 'jump_window': 300, 'duration': 1, 'duration_end_point': 0},
 #'Fountain': {'geyserID': 15, 'loggerID': 9, 'filter_width': 60, 'snr': 50, 'jump_or_max': 'first_jump', 'jump_window': 120, 'duration': 1, 'duration_end_point': 2},
-'Grotto': {'geyserID': 21, 'loggerID': 12, 'filter_width': 60, 'snr': 50, 'jump_or_max': 'first_jump', 'jump_window': 120, 
-           'duration': { 'duration_end_point': 2, 
-                        'decrease_length': 20, # # of points to look for decreasing temperatures
-                        'decrease_count_threshold': 20, # # of points that must be decreasing
-                        'look_ahead': 2000, # points into the future to look for temperature dropoff
+#'Grotto': {'geyserID': 21, 'loggerID': 12, 'filter_width': 60, 'snr': 50, 'jump_or_max': 'first_jump', 'jump_window': 120, 
+#           'duration': { 'duration_end_point': 2, 
+#                        'decrease_length': 20, # # of points to look for decreasing temperatures
+#                        'decrease_count_threshold': 20, # # of points that must be decreasing
+#                        'look_ahead': 2000, # points into the future to look for temperature dropoff
+#                        }
+#           },
+'Spouter': {'geyserID': 50, 'loggerID': 19, 'filter_width': 60, 'snr': 20, 'jump_or_max': 'first_jump', 'jump_window': 30, 
+            'duration': { 'duration_end_point': 3, 
+                        'decrease_length': 10, # # of points to look for decreasing temperatures
+                        'decrease_count_threshold': 10, # # of points that must be decreasing
+                        'first_x_decreasing': 8,
+                        'look_ahead': 200 # points into the future to look for temperature dropoff
                         }
-           }
-#'Spouter': {'geyserID': 50, 'loggerID': 19, 'filter_width': 60, 'snr': 100, 'jump_or_max': 'max', 'jump_window': 30, 'duration': 1, 'duration_end_point': 0},
+            },
 #YVO
 #'Echinus': {'geyserID': 81, 'loggerID': 23, 'filter_width': 30, 'snr': 50, 'jump_or_max': 'max', 'jump_window': 300, 'duration': 0},
 #'Steamboat': {'geyserID': 163, 'loggerID': 21, 'filter_width': 30, 'snr': 50, 'jump_or_max': 'max', 'jump_window': 300, 'duration': 0},

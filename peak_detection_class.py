@@ -71,7 +71,7 @@ class geyser_logger_analyzer:
             for j in range(len(theRunup) - 1, 0,-1):
                 
                 if (theRunup[j] - theRunup[j - 1] < tempChangeThreshold):
-                    new_idx = i - (len(theRunup) - j)
+                    new_idx = i - (len(theRunup) - j) + 1
                     break
             
             final.append(new_idx)
@@ -188,6 +188,7 @@ class geyser_logger_analyzer:
             dur = self.find_end_time(i, 
                                      params['decrease_length'], 
                                      params['decrease_count_threshold'], 
+                                     params['first_x_decreasing'],
                                      params['look_ahead'], 
                                      params['duration_end_point'])
             self.durations.append(dur)
@@ -228,7 +229,7 @@ class geyser_logger_analyzer:
                 plt.pause(1)
                 print(inflection_scores)
     '''                   
-    def find_end_time(self, idx_start, decrease_length, decrease_count_threshold, look_ahead, end_point):
+    def find_end_time(self, idx_start, decrease_length, decrease_count_threshold, first_x_decreasing, look_ahead, end_point):
         
         for j in range(0,look_ahead): #how far out we go to find decreases
             #section to analyze
@@ -240,7 +241,7 @@ class geyser_logger_analyzer:
             decreases = sum(i < 0 for i in dd) #count of decreases in d
             
             # passes threshold count and first X points are decreasing
-            if (decreases >= decrease_count_threshold and max(dd[0:4]) < 0):
+            if (decreases >= decrease_count_threshold and max(dd[0:first_x_decreasing]) < 0):
                 return self.npx[idx_start + j + end_point]
                 
     def report(self, sec_tolerance):
