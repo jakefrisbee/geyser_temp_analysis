@@ -139,7 +139,7 @@ propEntries = gtapip.get_proposed_entries(p['geyserID'])
 for e in propEntries:
     theTime = e['time']
     
-    if theTime > 1383261232:
+    if theTime > 1398802213:
         window = 30 * 60 #seconds
         from_time = theTime - window / 2
         to_time = theTime + window / 2
@@ -155,14 +155,14 @@ for e in propEntries:
         idx = len(myLog.npx)
         
         myLog.peaks.append(idx / 2)
-        myLog.find_biggest_jumps(10)
+        
+        myLog.find_biggest_jumps(20)
         myLog.set_proposed_times()
-        
-        
-        myLog.post_proposed()        
+
         gtapip.delete_proposed_entry(p['geyserID'], theTime)
+        myLog.post_proposed()        
         
-        #myLog.big_jumps.append(idx)
+        
 
 
 '''

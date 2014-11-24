@@ -5,6 +5,7 @@ import json #API returns JSON
 
 api_str = "http://localhost/api/v3"
 #api_str = "http://sandbox.geysertimes.org/api/v3"
+#api_str = "http://www.geysertimes.org/api/v3"
 
 def gt_loggerdata(loggerID,epoch_from,epoch_to):
 
