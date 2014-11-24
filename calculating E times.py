@@ -91,7 +91,7 @@ for geyser in run_these:
         
         #advance from_time
         from_time = to_time
-'''        
+        
 #
 # One geyser section
 #
@@ -120,6 +120,50 @@ while (from_time <= final_time):
     
     #advance from_time
     from_time = to_time
+'''
+########################
+#
+# Re-adjust already calc'd times
+#
+########################
+
+# create analyzer and set times
+# make a new set of times
+# delete old times
+# upload new times
+geyser = 'Oblong'
+p = params[geyser]
+
+propEntries = gtapip.get_proposed_entries(p['geyserID'])
+
+for e in propEntries:
+    theTime = e['time']
+    
+    if theTime > 1383261232:
+        window = 30 * 60 #seconds
+        from_time = theTime - window / 2
+        to_time = theTime + window / 2
+        
+        #initialize
+        myLog = pdc.geyser_logger_analyzer(
+                    geyser, 
+                    p['loggerID'], 
+                    p['geyserID'], 
+                    int(from_time), 
+                    int(to_time))
+        
+        idx = len(myLog.npx)
+        
+        myLog.peaks.append(idx / 2)
+        myLog.find_biggest_jumps(10)
+        myLog.set_proposed_times()
+        
+        
+        myLog.post_proposed()        
+        gtapip.delete_proposed_entry(p['geyserID'], theTime)
+        
+        #myLog.big_jumps.append(idx)
+
 
 '''
 myLog.plot_series()

@@ -14,7 +14,11 @@ import scipy
 import matplotlib.pyplot as plt
 
 class geyser_logger_analyzer:
-
+    
+    peaks = []
+    # DURATIONS
+    durations = []
+    
     def __init__(self, geyser, loggerID, geyserID, from_time, to_time):
         self.geyser = geyser
         self.loggerID = loggerID
@@ -129,9 +133,6 @@ class geyser_logger_analyzer:
             
         print "setting proposed times"
         self.set_proposed_times()
-        
-        # DURATIONS
-        self.durations = []
         
         if 'duration_by_big_drop' in p:
             self.find_durations_big_drop(p['duration_by_big_drop'])
