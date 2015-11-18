@@ -1,51 +1,45 @@
 # -*- coding: utf-8 -*-
-"""
-Spyder Editor
 
-This temporary script file is located here:
-C:\Users\Jake\.spyder2\.temp.py
-"""
 import numpy as np
 import scipy
 import scipy.signal
 
 def smooth(x,window_len=11,window='hanning'):
-    """smooth the data using a window with requested size.
-    
-    This method is based on the convolution of a scaled window with the signal.
-    The signal is prepared by introducing reflected copies of the signal 
-    (with the window size) in both ends so that transient parts are minimized
-    in the begining and end part of the output signal.
-    
-    input:
-        x: the input signal 
-        window_len: the dimension of the smoothing window; should be an odd integer
-        window: the type of window from 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'
-            flat window will produce a moving average smoothing.
-
-    output:
-        the smoothed signal
-        
-    example:
-
-    t=linspace(-2,2,0.1)
-    x=sin(t)+randn(len(t))*0.1
-    y=smooth(x)
-    
-    see also: 
-    
-    np.hanning, np.hamming, np.bartlett, np.blackman, np.convolve
-    scipy.signal.lfilter
- 
-    TODO: the window parameter could be the window itself if an array instead of a string
-    NOTE: length(output) != length(input), to correct this: return y[(window_len/2-1):-(window_len/2)] instead of just y.
-    """
+#    smooth the data using a window with requested size.
+#    
+#    This method is based on the convolution of a scaled window with the signal.
+#    The signal is prepared by introducing reflected copies of the signal 
+#    (with the window size) in both ends so that transient parts are minimized
+#    in the begining and end part of the output signal.
+#    
+#    input:
+#        x: the input signal 
+#        window_len: the dimension of the smoothing window; should be an odd integer
+#        window: the type of window from 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'
+#            flat window will produce a moving average smoothing.
+#
+#    output:
+#        the smoothed signal
+#        
+#    example:
+#
+#    t=linspace(-2,2,0.1)
+#    x=sin(t)+randn(len(t))*0.1
+#    y=smooth(x)
+#    
+#    see also: 
+#    
+#    np.hanning, np.hamming, np.bartlett, np.blackman, np.convolve
+#    scipy.signal.lfilter
+# 
+#    TODO: the window parameter could be the window itself if an array instead of a string
+#    NOTE: length(output) != length(input), to correct this: return y[(window_len/2-1):-(window_len/2)] instead of just y.
 
     if x.ndim != 1:
-        raise ValueError, "smooth only accepts 1 dimension arrays."
+        raise(ValueError, "smooth only accepts 1 dimension arrays.")
 
     if x.size < window_len:
-        raise ValueError, "Input vector needs to be bigger than window size."
+        raise(ValueError, "Input vector needs to be bigger than window size.")
 
 
     if window_len<3:
@@ -53,7 +47,7 @@ def smooth(x,window_len=11,window='hanning'):
 
 
     if not window in ['flat', 'hanning', 'hamming', 'bartlett', 'blackman']:
-        raise ValueError, "Window is on of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'"
+        raise(ValueError, "Window is on of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'")
 
 
     s=np.r_[x[window_len-1:0:-1],x,x[-1:-window_len:-1]]
@@ -136,23 +130,6 @@ def times_and_intervals(indexes,times):
     final = zip(indexes, e_times,intervals)    
     
     return final
-  
-
-'''
-fname = "C:\Users\Jake\Documents\GitHub\geysertimes-dot-org\datalogger\dataLoggerRaw\uploaded\Aurum Geyser.csv"
-data = temperature_csv_to_temperature_array(fname)
-
-temp_data = extract_temperature_array(data)
-
-smoothed_data = smooth_temperature(temp_data)
-
-all_peaks = find_geyser_peaks(temp_data)
-
-e_times = eruption_times(all_peaks,data)
-
-print e_times
-#print all_peaks
-'''
 
 
 
